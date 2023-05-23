@@ -5,24 +5,24 @@ class Payment extends StatelessWidget{
 
   ButtonStyle _getStyleButton(color,context){
     ButtonStyle buttonStyle = ElevatedButton.styleFrom(
-        minimumSize: Size(MediaQuery.of(context).size.width-300, 50),
+        minimumSize: Size(MediaQuery.of(context).size.width-15, 50),
         elevation: 5,
         shadowColor: color,
-        shape : ContinuousRectangleBorder(borderRadius: BorderRadius.circular(50))
+        shape : ContinuousRectangleBorder(borderRadius: BorderRadius.circular(5.0))
     );
     return buttonStyle;
   }
 
   @override
   Widget build(BuildContext context) {
-      const titleAppbarStyle = TextStyle(
+    const titleAppbarStyle = TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.bold,
       color: Colors.white,
     );
     const double sizeBoxHeight = 50;
     double imageHeight = 100;
-    double imageWidth = MediaQuery.of(context).size.width-300;
+    double imageWidth = MediaQuery.of(context).size.width-100;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,

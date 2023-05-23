@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import './ProductsWithAppBar.dart';
 import './api/api.dart';
+import 'model/Category.dart';
 
 //affiche lis kategori
 class Categories extends StatefulWidget{
 
-  final Future<List> Function() getCategories ;
+  final Future<List<Category>> Function() getCategories ;
 
   Categories({super.key, required this.getCategories});
 
@@ -18,7 +19,7 @@ class Categories extends StatefulWidget{
 
 class _CategoriesState extends State<Categories>{
 
-  late Future<List> _categories;
+  late Future<List<Category>> _categories;
   late Key _key;
 
   @override
@@ -42,7 +43,7 @@ class _CategoriesState extends State<Categories>{
                 scrollDirection: Axis.vertical,
                 physics: NeverScrollableScrollPhysics(),
                 children: categoryList.data!.map((
-                    categoryName) => _CategoryCard(categoryName: categoryName
+                    category) => _CategoryCard(category: category
                 )).toList(),
               );
             }
@@ -78,28 +79,29 @@ class _CategoriesState extends State<Categories>{
 
 class _CategoryCard extends StatelessWidget{
 
-  final String categoryName;
+  final Category category;
 
-  _CategoryCard({required this.categoryName});
+  _CategoryCard({required this.category});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textStyle = TextStyle(
-      color: Colors.black,
+      color: Colors.white,
       fontSize: 20,
     );
     return GestureDetector(
       onTap: (){
         Navigator.push(context, MaterialPageRoute(
             builder: (ctx){ return ProductsWithAppBar(getProducts: () {
-                return APIService.getProductsByCategory(categoryName);
+                return APIService.getProductsByCategory(category.title);
               });
             }
           )
         );
       },
       child: Card(
+        color: Colors.black26,
         child : Padding(
             padding: const EdgeInsets.all(20),
             child:Column(
@@ -107,14 +109,9 @@ class _CategoryCard extends StatelessWidget{
               children: [
                 SizedBox(
                   width: double.infinity,
-                  height: 170,
-                  child: Image.asset(
-                    "assets/images/$categoryName.png",
-                    width: double.infinity,
-                    height: 170,
-                  ),
+                  height: 70,
                 ),
-                Text(categoryName,style: textStyle)
+                Text(category.title,style: textStyle)
               ],
             )
         ),

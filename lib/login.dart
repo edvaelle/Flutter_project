@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './api/api.dart';
-import 'main.dart';
+import '../../main.dart';
 
 class Login extends StatefulWidget{
   @override
@@ -163,7 +163,7 @@ class _LoginSucces extends StatelessWidget{
               Card(
                 color: Colors.green,
                 child : Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(30),
                   child: Text("Connected",style: textStyle,),
                 ),
               ),

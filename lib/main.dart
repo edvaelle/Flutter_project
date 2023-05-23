@@ -1,119 +1,97 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import './Categories.dart';
 import './PayBtn.dart';
 import './Products.dart';
 import './ProductsWithAppBar.dart';
 import './login.dart';
-import 'package:provider/provider.dart';
 import './storage/storage.dart';
 import './api/api.dart';
+import 'model/User.dart';
 
 void main() {
-  //pou lanse aplikasyon an
   runApp(MyApp());
 }
-//widget principal
+//wid prensipal app la,gen mod ki fet men ki pa paret
 class MyApp extends StatelessWidget {
-  //pou idantifye widget principal la
-  MyApp({super.key});
+  MyApp({Key? key}) : super(key: key);
 
   @override
-  //build la pemet ou retounen yon widget
+  //retounen entefas itilizate a
   Widget build(BuildContext context) {
-    //changenotifierprovider a se yon varyab global pou tout aplikasyon an, li la poul kreye state global la
+    //pou kreye yon eta global
     return ChangeNotifierProvider(
-        create: (context) => MyAppState(),
-        child : MaterialApp(
+      //reprezante eta global
+      create: (context) => MyAppState(),
+      //defini tem aplikasyon an,defini sa kap monte avan(home)
+      child: MaterialApp(
+        //dezaktive mod debogaj
         debugShowCheckedModeBanner: false,
-        //pou defini couleur principal
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
           useMaterial3: true,
         ),
-        //se home sa ki di men ki widget kap afiche
-          //widget prensipal la se home
         home: Home(),
-      )
+      ),
     );
   }
 }
 
 class MyAppState extends ChangeNotifier {
-//sa se yon constructeur
-  MyAppState(){
-    //konekte ak done ki t preanrejistre pou yon itilizate si genyen
-    //pou si li t konekte deja
+  //varyab prive ki stoke enfo itilizate ki konekte a
+  User? _currentUser;
+
+  MyAppState() {
+    // pou jere koneksyon itilizate a
     loadLocalUser();
   }
-// currentuser a se index eleman ki seleksyone a
-  //string lan kom kle, dynamic lan se pou li ka pran nenpot valeur
-  Map<String, dynamic> _currentUser = {};
 
-  //verifye si gen yon itilizate ki konekete
-  bool isLogin(){
-    if(_currentUser.isEmpty){
-      return false;
-    }
-    else{
-      return true;
-    }
+  bool isLogin() {
+    return _currentUser != null;
   }
 
-  //konekte yon itilizate
-  Future<void> login(Map<String, dynamic> currentUser) async{
-    _currentUser = currentUser;
-    //anrejistre itilizate ki konekte a an lokal
-    await Storage.saveUser(_currentUser);
-    //aveti ke currentUser a chanje
+  Future<void> login(User user) async {
+    _currentUser = user;
+    await Storage.saveUser(user);
     notifyListeners();
   }
 
-  //dekonekte yon itilizate
-  Future<void> logout() async{
-    _currentUser.clear();
-    //siprimer itilizate ki konekte a an lokal
+  Future<void> logout() async {
+    _currentUser = null;
     await Storage.delUser();
     notifyListeners();
   }
 
-  //rekipere itilizate aktyel la
-  Map<String, dynamic> getUser(){
+  User? getUser() {
     return _currentUser;
   }
 
-  //chaje itilizate ki anrejistre an local la
-  Future<void> loadLocalUser() async{
-    //rekipere itlizate ki an local la
-    Map<String,dynamic> user = await Storage.getUser();
-    login(user);
+  Future<void> loadLocalUser() async {
+    User? user = await Storage.getUser();
+    if (user != null) {
+      login(user);
+    }
   }
-
 }
-
-
-//paj akey la
-class Home extends StatefulWidget{
+// paj akey app la
+class Home extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _HomeState();
   }
 }
-
-class _HomeState extends State<Home>{
-
-  late int _index;
+//eta interne paj akey la
+class _HomeState extends State<Home> {
+  //endex eleman aktyel
+  int _index = 1;
   late List<Widget> _widgets;
   late Widget _current;
-  // late la vle di ke kle a dwe initialize avan li utilize
   late Key _key;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    _index = 1;
-    //liste widgets
-    _widgets = [_Cart(),_Home(),_Favorite()];
-    //eleman ki fek seleksyone a
+    _widgets = [_Cart(), _Home(), _Favorite()];
     _current = _widgets[_index];
     _key = UniqueKey();
   }
@@ -134,53 +112,77 @@ class _HomeState extends State<Home>{
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
               ),
-              child: state.isLogin() ?
-              Column(
+              child: state.isLogin()
+                  ? Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Only Shop",style: appbarStyle,),
-                  SizedBox(height: 30,),
+                  Text(
+                    "OnlyShop",
+                    style: appbarStyle,
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
                   Text(
                     "Username:",
-                    style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: Colors.cyanAccent),
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.cyanAccent,
+                    ),
                   ),
                   Text(
-                    state.getUser()["username"],
-                    style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: Colors.white),
+                    state.getUser()!.username,
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ],
-              ) : Text("Only Shop",style: appbarStyle,),
+              )
+                  : Text(
+                "OnlyShop",
+                style: appbarStyle,
+              ),
             ),
             ListTile(
               title: Text("Login"),
-              onTap: (){
+              onTap: () {
                 Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (ctx){ return Login();}
-                )
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (ctx) {
+                      return Login();
+                    },
+                  ),
                 );
               },
               enabled: !state.isLogin(),
             ),
             ListTile(
               title: Text("Product list"),
-              onTap: (){
-                //pou retounenw kotew t ye a
+              onTap: () {
                 Navigator.pop(context);
-                //pou voyew nan yon lot paj
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (ctx){ return ProductsWithAppBar(getProducts: APIService.getProducts,);}
-                )
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (ctx) {
+                      return ProductsWithAppBar(
+                        getProducts: APIService.getProducts,
+                      );
+                    },
+                  ),
                 );
               },
             ),
             ListTile(
               title: Text("Logout"),
-              onTap: (){
+              onTap: () {
                 state.logout();
                 setState(() {
-                  //rafrechi paj la, pou jenere kle a chak fwa user a vle rekonekte
                   _key = UniqueKey();
                 });
               },
@@ -191,19 +193,20 @@ class _HomeState extends State<Home>{
       ),
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("Only Shop",style: appbarStyle,),
+        title: Text(
+          "OnlyShop",
+          style: appbarStyle,
+        ),
         actions: [
           PayBtn(),
         ],
       ),
       body: Container(
         key: _key,
-        child : _current,
+        child: _current,
       ),
-      //widget paran ki affiche eleman nan barre de navigation anba paj la
       bottomNavigationBar: BottomNavigationBar(
-        onTap: (index){
-          //chanje widget kouran an
+        onTap: (index) {
           setState(() {
             _index = index;
             _current = _widgets[_index];
@@ -211,7 +214,6 @@ class _HomeState extends State<Home>{
         },
         currentIndex: _index,
         items: [
-          //li prezante eleman nan barre navigation an ex: Home
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
             label: "Cart",
@@ -230,54 +232,50 @@ class _HomeState extends State<Home>{
   }
 }
 
-class _Home extends StatelessWidget{
-
+class _Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child:SingleChildScrollView(
-        child:Column(
+      child: SingleChildScrollView(
+        child: Column(
           children: [
-            Categories(getCategories: APIService.getTopCategories,),
-            Products(getProducts: APIService.getTopProducts),
+            Categories(
+              getCategories: APIService.getTopCategories,
+            ),
+            Products(
+              getProducts: APIService.getTopProducts,
+            ),
           ],
         ),
-      )
+      ),
     );
   }
-
 }
 
-class _Cart extends StatelessWidget{
+class _Cart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MyAppState state = context.watch<MyAppState>();
-    if(state.isLogin()){
-      return Products(getProducts: () {
-        return Storage.getShopProducts(state.getUser()["id"]);
-      });
-    }
-    else{
-      return Products(getProducts: () {
-        return Storage.getShopProducts(-1);
-      });
-    }
+    int userId = state.getUser()?.id ?? -1;
+
+    return Products(
+      getProducts: () {
+        return Storage.getShopProducts(userId);
+      },
+    );
   }
 }
 
-class _Favorite extends StatelessWidget{
+class _Favorite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MyAppState state = context.watch<MyAppState>();
-    if(state.isLogin()){
-      return  Products(getProducts: () {
-        return Storage.getFavProducts(state.getUser()["id"]);
-      });
-    }
-    else{
-      return  Products(getProducts: () {
-        return Storage.getFavProducts(-1);
-      });
-    }
+    int userId = state.getUser()?.id ?? -1;
+
+    return Products(
+      getProducts: () {
+        return Storage.getFavProducts(userId);
+      },
+    );
   }
 }

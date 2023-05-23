@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import './PayBtn.dart';
-import 'FavShopBtn.dart';
+import './FavShopBtn.dart';
+import 'model/Product.dart';
+import 'model/User.dart';
 
 //afiche detay sou yon pwodwi
-class Product extends StatelessWidget {
-  final int productId;
-  final String name;
-  final String imageUrl;
-  final String price;
-  final String description;
-  final String category;
+class ProductDetail extends StatelessWidget {
+  final Product product;
   final int userId;
 
-  const Product({super.key, required this.name, required this.imageUrl, required this.price, required this.description, required this.category, required this.productId, required this.userId});
-
+  const ProductDetail({super.key, required this.product, required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +34,7 @@ class Product extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                category,
+                product.category!.title,
                 style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -47,27 +43,27 @@ class Product extends StatelessWidget {
               ),
               SizedBox(height: sizeBoxHeight),
               Image.network(
-                imageUrl,
+                product.image!,
                 fit: BoxFit.cover,
                 height: 300,
                 width: double.infinity,
               ),
               SizedBox(height: sizeBoxHeight),
               Text(
-                name,
+                product.title,
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: sizeBoxHeight),
               SizedBox(height: sizeBoxHeight),
               Text(
-                'Pri: $price HTG',
+                'Pri: ${product.price} HTG',
                 style: TextStyle(fontSize: 20,color: Colors.green,),
               ),
               SizedBox(height: sizeBoxHeight),
-              FavShopBtn(userId: userId, productId: productId),
+              FavShopBtn(productId: product.id, userId: userId,),
               SizedBox(height: sizeBoxHeight),
               Text(
-                description,
+                product.description!,
                 style: TextStyle(fontSize: 20),
               ),
             ],

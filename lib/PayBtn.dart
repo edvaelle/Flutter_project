@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../main.dart';
 import 'Payment.dart';
-import 'main.dart';
 
 class PayBtn extends StatelessWidget {
   @override
@@ -22,10 +22,10 @@ class PayBtn extends StatelessWidget {
           );
         }
         else{
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("You must be connected")));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("You must to connected")));
         }
       },
-      child: Text("Payment", style: appbarStyle,),
+      child: Text("Pay", style: appbarStyle,),
     );
   }
 }

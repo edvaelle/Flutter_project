@@ -45,7 +45,7 @@ class _FavShopBtnState extends State<FavShopBtn>{
                       });
                     }
                     else{
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("you must be connected to add to shopping")));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("you must to connected to add to shopping")));
                     }
                   },
                   color: Colors.blue,
@@ -76,7 +76,7 @@ class _FavShopBtnState extends State<FavShopBtn>{
                       });
                     }
                     else{
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("you must be connected to add to favorite")));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("you must to connected to add to favorite")));
                     }
                   },
                 );

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import './PayBtn.dart';
 import './Products.dart';
+import 'model/Product.dart';
 
-//afiche lis pwodwi yo avek yon appbar
-class ProductsWithAppBar extends StatelessWidget{
+// Affiche la liste des produits avec une appbar
+class ProductsWithAppBar extends StatelessWidget {
+  final Future<List<Product>> Function() getProducts;
 
-  final Future<List> Function() getProducts;
-
-  ProductsWithAppBar({super.key, required this.getProducts, });
+  ProductsWithAppBar({Key? key, required this.getProducts}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,10 @@ class ProductsWithAppBar extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("Product List",style: appbarStyle,),
+        title: Text(
+          "Product List",
+          style: appbarStyle,
+        ),
         actions: [
           PayBtn(),
         ],
@@ -27,5 +30,4 @@ class ProductsWithAppBar extends StatelessWidget{
       body: Products(getProducts: getProducts),
     );
   }
-
 }
